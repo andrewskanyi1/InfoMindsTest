@@ -4,7 +4,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(CustomersListQueryHandler).Assembly);
+});
 
 // Setup Database
 var connectionString = builder.Configuration.GetConnectionString("Backend") ?? throw new ArgumentNullException("Backend Connectionsting not set");
@@ -20,6 +25,8 @@ app.UseSwaggerDocumentation();
 
 // Register all the routes for the api
 app.UseApiRoutes();
+app.MapControllers();
+
 
 // Run the application
 app.Run();
