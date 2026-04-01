@@ -13,7 +13,8 @@ public class CustomersController : ControllerBase
         this.logger = logger;
     }
 
-    [HttpGet]
+    [HttpGet("list")]
+
 
     public async Task<IActionResult> GetCustomersList()
     {
