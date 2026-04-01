@@ -14,9 +14,17 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("list")]
-
-
     public async Task<IActionResult> GetCustomersList()
+    {
+
+        var customersListQuery = new CustomersListQuery();
+        var result = await mediator.Send(customersListQuery);
+
+        return Ok(result);
+    }
+
+    [HttpGet("export")]
+    public async Task<IActionResult> ExportCustomersList()
     {
 
         var customersListQuery = new CustomersListQuery();

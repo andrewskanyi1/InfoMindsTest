@@ -25,12 +25,17 @@ public class CustomersListQuery : IRequest<List<CustomersListQueryResponse>>
     public int Id { get; set; }
     public string? FirstName { get; set; }
 
+    public string? SearchText { get; set; }
+
+    public int Skip { get; set; }
+    public int Take { get; set; }
+    public string? SortColumn { get; set; }
+
 }
 
 
 public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, List<CustomersListQueryResponse>>
 {
-    private ILogger<CustomersListQueryHandler>? logger;
     private readonly BackendContext context;
 
     public CustomersListQueryHandler(BackendContext context)
@@ -43,7 +48,33 @@ public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, Lis
         var result = new List<CustomersListQueryResponse>();
         try
         {
-            var queryResult = context.Customers.Select(g => new CustomersListQueryResponse()
+
+            IQueryable<Customer> queryResult = context.Customers;
+
+            if (!string.IsNullOrEmpty(request.SearchText))
+            {
+                queryResult = queryResult.Where(customer => customer.Name.Contains(request.SearchText)
+                || customer.Email.Contains(request.SearchText)
+                );
+            }
+
+            // Add optional ordering
+            if (!string.IsNullOrEmpty(request.SortColumn))
+            {
+                //Add filtering by email
+                if (request.SortColumn.Equals("Email", StringComparison.OrdinalIgnoreCase))
+                {
+                    queryResult = queryResult.OrderBy(customer => customer.Email);
+                }
+                else if (request.SortColumn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    queryResult = queryResult.OrderBy(customer => customer.Name);
+                }
+
+                // Add more optional filtering here
+            }
+
+            result = [..queryResult.Select(g => new CustomersListQueryResponse()
             {
                 FirstName = g.Name,
                 Iban = g.Iban,
@@ -53,9 +84,7 @@ public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, Lis
                 Email = g.Email,
                 Phone = g.Phone,
                 Id = g.Id
-            }).ToList();
-            result = queryResult;
-
+            }).Skip(request.Skip).Take(request.Take)];
         }
         catch (Exception e)
         {
