@@ -1,18 +1,13 @@
+using Backend.Features.Customers;
 using Microsoft.AspNetCore.Mvc;
 namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CustomersController : ControllerBase
+public class CustomersController(ILogger<CustomersController> logger, IMediator mediator) : ControllerBase
 {
-    private IMediator mediator;
-    private ILogger<CustomersController> logger;
-
-    public CustomersController(ILogger<CustomersController> logger, IMediator mediator)
-    {
-        this.mediator = mediator;
-        this.logger = logger;
-    }
+    private readonly IMediator mediator = mediator;
+    private ILogger<CustomersController> logger = logger;
 
     [HttpGet("list")]
     public async Task<IActionResult> GetCustomersList([FromQuery] CustomersListQuery query)

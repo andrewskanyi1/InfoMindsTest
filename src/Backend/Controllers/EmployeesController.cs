@@ -8,15 +8,9 @@ namespace Backend.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 
-public class EmployeesController : ControllerBase
+public class EmployeesController(IMediator mediator) : ControllerBase
 {
-    private IMediator mediator;
-
-    public EmployeesController(IMediator mediator)
-    {
-        this.mediator = mediator;
-    }
-
+    private readonly IMediator mediator = mediator;
 
     [HttpGet("list")]
     public async Task<IActionResult> GetEmployeesList([FromQuery] EmployeesListQuery query)

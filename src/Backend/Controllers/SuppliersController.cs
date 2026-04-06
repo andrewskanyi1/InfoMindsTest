@@ -6,14 +6,9 @@ namespace Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SuppliersController : ControllerBase
+public class SuppliersController(IMediator mediator) : ControllerBase
 {
-    private IMediator mediator;
-
-    public SuppliersController(IMediator mediator)
-    {
-        this.mediator = mediator;
-    }
+    private readonly IMediator mediator = mediator;
 
     [HttpGet("list")]
     public IActionResult GetSuppliersList([FromQuery]SupplierListQuery query)

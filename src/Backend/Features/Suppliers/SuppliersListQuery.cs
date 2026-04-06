@@ -40,7 +40,7 @@ internal class SupplierListQueryHandler(BackendContext context) : IRequestHandle
                 Email = item.Email,
                 Phone = item.Phone,
             };
-            
+
             result.Add(resultItem);
         }
 
