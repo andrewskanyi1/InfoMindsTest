@@ -19,7 +19,7 @@ public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, Lis
             if (!string.IsNullOrEmpty(request.SearchText))
             {
                 queryResult = queryResult.Where(customer => customer.Name.Contains(request.SearchText)
-                && customer.Email.Contains(request.SearchText)
+                || customer.Email.Contains(request.SearchText)
                 );
             }
 
