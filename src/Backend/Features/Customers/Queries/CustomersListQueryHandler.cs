@@ -14,13 +14,12 @@ public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, Lis
         var result = new List<CustomersListQueryResponse>();
         try
         {
-
             IQueryable<Customer> queryResult = context.Customers;
 
             if (!string.IsNullOrEmpty(request.SearchText))
             {
                 queryResult = queryResult.Where(customer => customer.Name.Contains(request.SearchText)
-                || customer.Email.Contains(request.SearchText)
+                && customer.Email.Contains(request.SearchText)
                 );
             }
 

@@ -17,10 +17,9 @@ public class CustomersController(ILogger<CustomersController> logger, IMediator 
     }
 
     [HttpGet("export")]
-    public async Task<IActionResult> ExportCustomersList([FromQuery] CustomersListQuery query)
+    public async Task<IActionResult> ExportCustomersList([FromQuery] CustomersListExportQuery query)
     {
         var result = await mediator.Send(query);
-
-        return Ok(result);
+        return File(result, "application/xml", "customers.xml");
     }
 }

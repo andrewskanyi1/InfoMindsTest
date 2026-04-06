@@ -11,9 +11,9 @@ public class SuppliersController(IMediator mediator) : ControllerBase
     private readonly IMediator mediator = mediator;
 
     [HttpGet("list")]
-    public IActionResult GetSuppliersList([FromQuery]SupplierListQuery query)
+    public async Task<IActionResult> GetSuppliersList([FromQuery] SupplierListQuery query)
     {
-        var result = mediator.Send(query);
+        var result = await mediator.Send(query);
         return Ok(result);
     }
 }
