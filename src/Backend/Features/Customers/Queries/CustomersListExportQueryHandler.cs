@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace Backend.Features.Customers.Queries;
@@ -26,7 +27,7 @@ public class CustomersListExportQueryHandler : IRequestHandler<CustomersListExpo
                 );
             }
 
-            List<CustomersListQueryResponse?> customers = [..queryResult.Select(g => new CustomersListQueryResponse()
+            List<CustomersListQueryResponse> customers = await queryResult.Select(g => new CustomersListQueryResponse()
             {
                 FirstName = g.Name,
                 Iban = g.Iban,
@@ -36,11 +37,11 @@ public class CustomersListExportQueryHandler : IRequestHandler<CustomersListExpo
                 Email = g.Email,
                 Phone = g.Phone,
                 Id = g.Id
-            })];
+            }).ToListAsync(cancellationToken);
 
             var exportedList = new ExportedCustomersList()
             {
-                Customers = customers ?? []
+                Customers = customers
             };
 
             var serializer = new XmlSerializer(typeof(ExportedCustomersList));

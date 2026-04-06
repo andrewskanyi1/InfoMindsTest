@@ -36,5 +36,5 @@ public class CustomersListQueryResponse
 public class ExportedCustomersList
 {
     [XmlElement("Customer")]
-    public List<CustomersListQueryResponse?> Customers { get; set; } = [];
+    public List<CustomersListQueryResponse> Customers { get; set; } = [];
 }

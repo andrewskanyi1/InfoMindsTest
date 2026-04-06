@@ -1,6 +1,6 @@
 using Backend.Features.Customers;
 
-public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, List<CustomersListQueryResponse>>
+public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, CustomersListQueryPagedResponse>
 {
     private readonly BackendContext context;
 
@@ -9,9 +9,9 @@ public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, Lis
         this.context = context;
     }
 
-    public async Task<List<CustomersListQueryResponse>> Handle(CustomersListQuery request, CancellationToken cancellationToken)
+    public async Task<CustomersListQueryPagedResponse> Handle(CustomersListQuery request, CancellationToken cancellationToken)
     {
-        var result = new List<CustomersListQueryResponse>();
+        var result = new CustomersListQueryPagedResponse();
         try
         {
             IQueryable<Customer> queryResult = context.Customers;
@@ -39,7 +39,8 @@ public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, Lis
                 // Add more optional filtering here
             }
 
-            result = [..queryResult.Select(g => new CustomersListQueryResponse()
+            result.TotalCount = await queryResult.CountAsync(cancellationToken);
+            result.Items = await queryResult.Select(g => new CustomersListQueryResponse()
             {
                 FirstName = g.Name,
                 Iban = g.Iban,
@@ -49,10 +50,12 @@ public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, Lis
                 Email = g.Email,
                 Phone = g.Phone,
                 Id = g.Id
-            }).Skip(request.Skip).Take(request.Take)];
+            }).Skip(request.Skip).Take(request.Take).ToListAsync(cancellationToken);
+
         }
         catch (Exception e)
         {
+            throw;
 
         }
 

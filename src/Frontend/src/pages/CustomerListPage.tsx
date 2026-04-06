@@ -1,4 +1,4 @@
-import { Button, Paper, Stack, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Button, Paper, Stack, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 interface CustomerListQuery {
     id: number;
@@ -16,17 +16,29 @@ export default function CustomerListPage() {
     const [list, setList] = useState<CustomerListQuery[]>([]);
     const [searchInput, setSearchInput] = useState("");
     const [searchText, setSearchText] = useState("");
+    const [page, setPage] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     useEffect(() => {
-        const params = new URLSearchParams({ take: "10" });
+        const params = new URLSearchParams({
+            skip: String(page * rowsPerPage),
+            take: String(rowsPerPage),
+        });
         if (searchText) params.set("searchText", searchText);
 
         fetch(`/api/customers/list?${params.toString()}`)
             .then((res) => res.json())
-            .then((data) => setList(data as CustomerListQuery[]));
-    }, [searchText]);
+            .then((data) => {
+                setList(data.items as CustomerListQuery[]);
+                setTotalCount(data.totalCount);
+            });
+    }, [searchText, page, rowsPerPage]);
 
-    const handleSearch = () => setSearchText(searchInput);
+    const handleSearch = () => {
+        setPage(0);
+        setSearchText(searchInput);
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") handleSearch();
@@ -67,11 +79,11 @@ export default function CustomerListPage() {
                 Search
             </Button>
             <Button variant="outlined" onClick={handleExport}>
-                Export XML
+                Export ALL as XML
             </Button>
         </Stack>
         <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table sx={{ minWidth: 650, minHeight: 500 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
                         <StyledTableHeadCell>Name</StyledTableHeadCell>
@@ -94,6 +106,18 @@ export default function CustomerListPage() {
                     ))}
                 </TableBody>
             </Table>
+            <TablePagination
+                component="div"
+                count={totalCount}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                onPageChange={(_, newPage) => setPage(newPage)}
+                onRowsPerPageChange={(e) => {
+                    setRowsPerPage(parseInt(e.target.value, 10));
+                    setPage(0);
+                }}
+            />
         </TableContainer>
     </>
 }
