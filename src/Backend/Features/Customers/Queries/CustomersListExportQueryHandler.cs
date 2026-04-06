@@ -51,6 +51,7 @@ public class CustomersListExportQueryHandler : IRequestHandler<CustomersListExpo
         }
         catch (Exception e)
         {
+            throw;
 
         }
 

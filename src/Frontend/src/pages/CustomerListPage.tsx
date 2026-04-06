@@ -86,22 +86,31 @@ export default function CustomerListPage() {
             <Table sx={{ minWidth: 650, minHeight: 500 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
+                        <StyledTableHeadCell>Id</StyledTableHeadCell>
                         <StyledTableHeadCell>Name</StyledTableHeadCell>
                         <StyledTableHeadCell>Address</StyledTableHeadCell>
                         <StyledTableHeadCell>Email</StyledTableHeadCell>
                         <StyledTableHeadCell>Phone</StyledTableHeadCell>
+                        <StyledTableHeadCell>Iban</StyledTableHeadCell>
+                        <StyledTableHeadCell>Code</StyledTableHeadCell>
+                        <StyledTableHeadCell>Description</StyledTableHeadCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {list.map((row) => (
+
                         <TableRow
                             key={row.id}
                             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                         >
+                            <TableCell>{row.id}</TableCell>
                             <TableCell>{row.firstName} {row.lastName}</TableCell>
                             <TableCell>{row.address}</TableCell>
                             <TableCell>{row.email}</TableCell>
                             <TableCell>{row.phone}</TableCell>
+                            <TableCell>{row.iban}</TableCell>
+                            <TableCell>{row.code}</TableCell>
+                            <TableCell>{row.description}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
