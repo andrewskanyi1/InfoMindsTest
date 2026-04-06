@@ -1,3 +1,6 @@
+using Backend.Features.Employees;
+using Backend.Features.Suppliers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,10 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddLogging();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(CustomersListQueryHandler).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(EmployeesListQueryHandler).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(SupplierListQueryHandler).Assembly);
 });
 
 // Setup Database

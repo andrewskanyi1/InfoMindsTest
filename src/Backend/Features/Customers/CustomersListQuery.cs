@@ -14,11 +14,7 @@ public class CustomersListQueryResponse
     public string? Code { get; set; }
 
     public string? Description { get; set; }
-
-
 }
-
-
 
 public class CustomersListQuery : IRequest<List<CustomersListQueryResponse>>
 {
@@ -30,7 +26,6 @@ public class CustomersListQuery : IRequest<List<CustomersListQueryResponse>>
     public int Skip { get; set; }
     public int Take { get; set; }
     public string? SortColumn { get; set; }
-
 }
 
 
@@ -59,20 +54,20 @@ public class CustomersListQueryHandler : IRequestHandler<CustomersListQuery, Lis
             }
 
             // Add optional ordering
-            if (!string.IsNullOrEmpty(request.SortColumn))
-            {
-                //Add filtering by email
-                if (request.SortColumn.Equals("Email", StringComparison.OrdinalIgnoreCase))
-                {
-                    queryResult = queryResult.OrderBy(customer => customer.Email);
-                }
-                else if (request.SortColumn.Equals("Name", StringComparison.OrdinalIgnoreCase))
-                {
-                    queryResult = queryResult.OrderBy(customer => customer.Name);
-                }
+            // if (!string.IsNullOrEmpty(request.SortColumn))
+            // {
+            //     //Add filtering by email
+            //     if (request.SortColumn.Equals("Email", StringComparison.OrdinalIgnoreCase))
+            //     {
+            //         queryResult = queryResult.OrderBy(customer => customer.Email);
+            //     }
+            //     else if (request.SortColumn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+            //     {
+            //         queryResult = queryResult.OrderBy(customer => customer.Name);
+            //     }
 
-                // Add more optional filtering here
-            }
+            //     // Add more optional filtering here
+            // }
 
             result = [..queryResult.Select(g => new CustomersListQueryResponse()
             {
